@@ -1,7 +1,7 @@
 use super::schema::hero as hero_table;
 use diesel;
 use diesel::mysql::MysqlConnection;
-use diesel::prelude::*;
+use diesel::prelude::{Insertable, Queryable};
 use rocket_contrib::json::Json;
 
 #[derive(Serialize, Deserialize, Debug, Queryable, Insertable)]
