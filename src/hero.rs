@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use rocket_contrib::json::Json;
 
 use super::schema;
-use schema::hero as hero_table;
+use schema::hero;
 
 #[derive(AsChangeset, Serialize, Deserialize, Debug, Queryable, Insertable)]
 #[table_name = "hero"]
@@ -18,9 +18,9 @@ pub struct Hero {
 }
 
 impl Hero {
-    pub fn create(connection: &diesel::MysqlConnection, hero: &Hero) -> Hero {
-        diesel::insert_into(hero_table::table)
-            .values(hero)
+    pub fn create(connection: &diesel::MysqlConnection, h: &Hero) -> Hero {
+        diesel::insert_into(hero::table)
+            .values(h)
             .execute(connection)
             .expect("Error creating new hero");
 
