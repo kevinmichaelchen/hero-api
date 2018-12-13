@@ -40,11 +40,15 @@ impl Hero {
             .unwrap()
     }
 
-    pub fn read(connection: &MysqlConnection) -> Vec<HeroWithId> {
+    pub fn get_bulk(connection: &MysqlConnection) -> Vec<HeroWithId> {
         hero::table
             .order(hero::id)
             .load::<HeroWithId>(connection)
             .unwrap()
+    }
+
+    pub fn get_detail(connection: &MysqlConnection, id: i32) -> HeroWithId {
+        hero::table.find(id).first(connection).unwrap()
     }
 
     pub fn update(connection: &MysqlConnection, id: i32, h: HeroWithId) -> bool {

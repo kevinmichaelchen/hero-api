@@ -42,8 +42,13 @@ fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<HeroWithId> {
 }
 
 #[get("/")]
-fn read(conn: MyDatabase) -> Json<JsonValue> {
-    Json(json!(Hero::read(&conn.0)))
+fn get_bulk(conn: MyDatabase) -> Json<JsonValue> {
+    Json(json!(Hero::get_bulk(&conn.0)))
+}
+
+#[get("/<id>")]
+fn get_detail(conn: MyDatabase, id: i32) -> Json<HeroWithId> {
+    Json(Hero::get_detail(&conn.0, id))
 }
 
 #[put("/<id>", data = "<hero>")]
@@ -66,8 +71,10 @@ fn delete(conn: MyDatabase, id: i32) -> Json<JsonValue> {
 
 fn rocket() -> Rocket {
     rocket::ignite()
-        .mount("/hero", routes![create, update, delete])
-        .mount("/heroes", routes![read])
+        .mount(
+            "/hero",
+            routes![create, update, delete, get_bulk, get_detail],
+        )
         .mount("/", routes![hello])
         .attach(MyDatabase::fairing())
 }
