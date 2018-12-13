@@ -26,7 +26,7 @@ fn hello() -> &'static str {
 
 #[post("/", data = "<hero>")]
 fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<Hero> {
-    Hero::create(&conn, hero)
+    Hero::create(&conn.0, hero)
 }
 
 fn rocket() -> Rocket {
