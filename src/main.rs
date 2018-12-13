@@ -18,7 +18,14 @@ struct MyDatabase(diesel::MysqlConnection);
 
 //mod hero;
 //use hero::Hero;
-#[derive(Serialize, Deserialize, Debug)]
+
+//use diesel;
+use diesel::prelude::*;
+use diesel::mysql::MysqlConnection;
+
+mod schema;
+use schema::hero as hero_table;
+#[derive(Serialize, Deserialize, Debug, Queryable, Insertable)]
 pub struct Hero {
     pub id: Option<i32>,
     pub name: String,
@@ -28,14 +35,15 @@ pub struct Hero {
 }
 
 impl Hero {
-    pub fn create(conn: &diesel::MysqlConnection, hero: Json<Hero>) -> Json<Hero> {
-        hero
+    pub fn create(connection: &diesel::MysqlConnection, hero: Json<Hero>) -> Json<Hero> {
+        diesel::insert_into(hero_table::table)
+            .values(&hero)
+            .execute(connection)
+            .expect("Error creating new hero");
+
+        hero_table::table.order(hero_table::id.desc()).first(connection).unwrap()
     }
 }
-
-
-
-
 
 
 #[get("/")]

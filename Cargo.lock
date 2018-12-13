@@ -183,6 +183,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "hero-api"
 version = "0.1.0"
 dependencies = [
+ "diesel 1.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket_contrib 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.82 (registry+https://github.com/rust-lang/crates.io-index)",
