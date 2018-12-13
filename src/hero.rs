@@ -1,8 +1,8 @@
-use diesel;
-use diesel::prelude::*;
-use diesel::mysql::MysqlConnection;
-use rocket_contrib::json::Json;
 use super::schema::hero as hero_table;
+use diesel;
+use diesel::mysql::MysqlConnection;
+use diesel::prelude::*;
+use rocket_contrib::json::Json;
 
 #[derive(Serialize, Deserialize, Debug, Queryable, Insertable)]
 pub struct Hero {
@@ -20,6 +20,9 @@ impl Hero {
             .execute(connection)
             .expect("Error creating new hero");
 
-        hero_table::table.order(hero_table::id.desc()).first(connection).unwrap()
+        hero_table::table
+            .order(hero_table::id.desc())
+            .first(connection)
+            .unwrap()
     }
 }

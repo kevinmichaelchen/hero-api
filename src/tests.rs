@@ -1,7 +1,7 @@
+use super::hero::Hero;
 use super::rocket;
 use rocket::http::Status;
 use rocket::local::Client;
-use super::hero::Hero;
 
 #[test]
 fn test_hello() {
@@ -22,7 +22,10 @@ fn it_works() {
     };
     let serialized = serde_json::to_string(&hero).unwrap();
     println!("serialized = {}", serialized);
-    assert_eq!(serialized, r#"{"id":1,"name":"Superman","identity":"Clark Kent","hometown":"Metropolis","age":32}"#);
+    assert_eq!(
+        serialized,
+        r#"{"id":1,"name":"Superman","identity":"Clark Kent","hometown":"Metropolis","age":32}"#
+    );
 
     let deserialized: Hero = serde_json::from_str(&serialized).unwrap();
     println!("deserialized = {:?}", deserialized);

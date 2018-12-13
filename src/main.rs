@@ -17,11 +17,12 @@ use rocket_contrib::json::Json;
 #[database("my_db")]
 struct MyDatabase(diesel::MysqlConnection);
 
-mod schema;
 mod hero;
+mod schema;
 use hero::Hero;
 
-#[cfg(test)] mod tests;
+#[cfg(test)]
+mod tests;
 
 #[get("/")]
 fn hello() -> &'static str {
