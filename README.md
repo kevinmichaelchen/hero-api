@@ -12,10 +12,31 @@ To download the latest nightly build of Rust and its package manager, [cargo](ht
 make setup
 ```
 
-### Download Postgres
-On macOS, you can run 
-```bash
-brew install postgresql
+### Setting up the database
+This demo uses MySQL, since it's what I know best.
+Download MySQL, log in as root, (usually passwordless), with:
+```
+mysql -uroot
+```
+
+Then, in the MySQL REPL, run:
+```
+mysql> CREATE DATABASE hero;
+Query OK, 1 row affected (0.07 sec)
+
+mysql> CREATE USER IF NOT EXISTS 'hero'@'localhost' IDENTIFIED BY 'hero';
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> GRANT ALL ON hero.* TO 'hero'@'localhost';
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> exit
+Bye
+```
+
+You can log in as the `hero` user you just created with:
+```
+mysql -uhero -phero -Dhero
 ```
 
 ### Running the server

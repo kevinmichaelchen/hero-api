@@ -1,0 +1,2 @@
+[global.databases]
+my_db = { url = "mysql://hero:hero@localhost/hero" }

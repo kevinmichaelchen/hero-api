@@ -1,16 +1,60 @@
+#![feature(proc_macro_hygiene, decl_macro)]
+
+#[macro_use]
+extern crate rocket;
+
+#[macro_use]
+extern crate rocket_contrib;
+
 #[macro_use]
 extern crate serde_derive;
 
-fn main() {
-    println!("{}", "hello world")
-}
+use rocket::Rocket;
+use rocket_contrib::databases::diesel;
+use rocket_contrib::json::Json;
+
+#[database("my_db")]
+struct MyDatabase(diesel::MysqlConnection);
 
 mod hero;
+use hero::Hero;
+
+#[get("/")]
+fn hello() -> &'static str {
+    "Hello, world!"
+}
+
+#[post("/", data = "<hero>")]
+fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<Hero> {
+    Hero::create(&conn, hero)
+}
+
+fn rocket() -> Rocket {
+    rocket::ignite()
+        .mount("/hero", routes![create])
+        .mount("/", routes![hello])
+        .attach(MyDatabase::fairing())
+}
+
+fn main() {
+    rocket().launch();
+}
 
 #[cfg(test)]
 mod tests {
-
+    use super::rocket;
     use crate::hero::Hero;
+    use rocket::http::Status;
+    use rocket::local::Client;
+
+    #[test]
+    fn test_hello() {
+        let client = Client::new(rocket()).unwrap();
+        let mut response = client.get("/").dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.body_string(), Some("Hello, world!".into()));
+    }
+
     #[test]
     fn it_works() {
         let hero = Hero {
