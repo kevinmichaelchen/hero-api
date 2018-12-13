@@ -16,7 +16,6 @@ use rocket::Rocket;
 extern crate diesel;
 //use rocket_contrib::databases::diesel;
 
-
 use rocket_contrib::json::Json;
 
 #[database("my_db")]
@@ -36,7 +35,11 @@ fn hello() -> &'static str {
 
 #[post("/", data = "<hero>")]
 fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<Hero> {
-    Hero::create(&conn.0, hero)
+    let insert = Hero {
+        id: None,
+        ..hero.into_inner()
+    };
+    Json(Hero::create(&conn.0, &insert))
 }
 
 fn rocket() -> Rocket {

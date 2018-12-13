@@ -1,10 +1,14 @@
-use super::schema::hero as hero_table;
 use diesel;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
+
 use rocket_contrib::json::Json;
 
-#[derive(Serialize, Deserialize, Debug, Queryable, Insertable)]
+use super::schema;
+use schema::hero as hero_table;
+
+#[derive(AsChangeset, Serialize, Deserialize, Debug, Queryable, Insertable)]
+#[table_name = "hero"]
 pub struct Hero {
     pub id: Option<i32>,
     pub name: String,
@@ -14,15 +18,19 @@ pub struct Hero {
 }
 
 impl Hero {
-    pub fn create(connection: &diesel::MysqlConnection, hero: Json<Hero>) -> Json<Hero> {
+    pub fn create(connection: &diesel::MysqlConnection, hero: &Hero) -> Hero {
         diesel::insert_into(hero_table::table)
-            .values(&hero)
+            .values(hero)
             .execute(connection)
             .expect("Error creating new hero");
 
-        hero_table::table
-            .order(hero_table::id.desc())
-            .first(connection)
-            .unwrap()
+        // TODO return record we just inserted instead of mock
+        Hero {
+            id: Some(1),
+            name: String::from("Superman"),
+            identity: String::from("Clark Kent"),
+            hometown: String::from("Metropolis"),
+            age: 32,
+        }
     }
 }
