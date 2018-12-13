@@ -34,15 +34,6 @@ impl Hero {
             .execute(connection)
             .expect("Error creating new hero");
 
-        // TODO return record we just inserted instead of mock
-        HeroWithId {
-            id: 1,
-            name: String::from("Superman"),
-            identity: String::from("Clark Kent"),
-            hometown: String::from("Metropolis"),
-            age: 32,
-        };
-
         hero::table
             .order(hero::id.desc())
             .first(connection)
