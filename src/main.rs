@@ -1,36 +1,54 @@
+#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(uniform_paths)]
+
+#[macro_use]
+extern crate rocket;
+
+#[macro_use]
+extern crate rocket_contrib;
+
 #[macro_use]
 extern crate serde_derive;
 
-fn main() {
-    println!("{}", "hello world")
-}
+use rocket::Rocket;
+
+#[macro_use]
+extern crate diesel;
+//use rocket_contrib::databases::diesel;
+
+use rocket_contrib::json::Json;
+
+#[database("my_db")]
+struct MyDatabase(diesel::MysqlConnection);
 
 mod hero;
+mod schema;
+use hero::Hero;
 
 #[cfg(test)]
-mod tests {
+mod tests;
 
-    use crate::hero::Hero;
-    #[test]
-    fn it_works() {
-        let hero = Hero {
-            id: Some(1),
-            name: String::from("Superman"),
-            identity: String::from("Clark Kent"),
-            hometown: String::from("Metropolis"),
-            age: 32,
-        };
-        let serialized = serde_json::to_string(&hero).unwrap();
-        println!("serialized = {}", serialized);
-        assert_eq!(serialized, r#"{"id":1,"name":"Superman","identity":"Clark Kent","hometown":"Metropolis","age":32}"#);
+#[get("/")]
+fn hello() -> &'static str {
+    "Hello, world!"
+}
 
-        let deserialized: Hero = serde_json::from_str(&serialized).unwrap();
-        println!("deserialized = {:?}", deserialized);
+#[post("/", data = "<hero>")]
+fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<Hero> {
+    let insert = Hero {
+        id: None,
+        ..hero.into_inner()
+    };
+    Json(Hero::create(&conn.0, &insert))
+}
 
-        assert_eq!(deserialized.id, Some(1));
-        assert_eq!(deserialized.name, "Superman");
-        assert_eq!(deserialized.identity, "Clark Kent");
-        assert_eq!(deserialized.hometown, "Metropolis");
-        assert_eq!(deserialized.age, 32);
-    }
+fn rocket() -> Rocket {
+    rocket::ignite()
+        .mount("/hero", routes![create])
+        .mount("/", routes![hello])
+        .attach(MyDatabase::fairing())
+}
+
+fn main() {
+    rocket().launch();
 }
