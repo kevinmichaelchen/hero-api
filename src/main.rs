@@ -8,13 +8,15 @@ extern crate rocket;
 extern crate rocket_contrib;
 
 #[macro_use]
-extern crate diesel;
-
-#[macro_use]
 extern crate serde_derive;
 
 use rocket::Rocket;
-use rocket_contrib::databases::diesel;
+
+#[macro_use]
+extern crate diesel;
+//use rocket_contrib::databases::diesel;
+
+
 use rocket_contrib::json::Json;
 
 #[database("my_db")]
