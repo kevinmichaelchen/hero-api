@@ -1,4 +1,4 @@
-use super::hero::Hero;
+use super::hero::HeroWithId;
 use super::rocket;
 use rocket::http::Status;
 use rocket::local::Client;
@@ -13,8 +13,8 @@ fn test_hello() {
 
 #[test]
 fn it_works() {
-    let hero = Hero {
-        id: Some(1),
+    let hero = HeroWithId {
+        id: 1,
         name: String::from("Superman"),
         identity: String::from("Clark Kent"),
         hometown: String::from("Metropolis"),
@@ -27,10 +27,10 @@ fn it_works() {
         r#"{"id":1,"name":"Superman","identity":"Clark Kent","hometown":"Metropolis","age":32}"#
     );
 
-    let deserialized: Hero = serde_json::from_str(&serialized).unwrap();
+    let deserialized: HeroWithId = serde_json::from_str(&serialized).unwrap();
     println!("deserialized = {:?}", deserialized);
 
-    assert_eq!(deserialized.id, Some(1));
+    assert_eq!(deserialized.id, 1);
     assert_eq!(deserialized.name, "Superman");
     assert_eq!(deserialized.identity, "Clark Kent");
     assert_eq!(deserialized.hometown, "Metropolis");
