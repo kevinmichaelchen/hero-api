@@ -6,6 +6,7 @@ import AppHeader from './AppHeader';
 import * as serviceWorker from './serviceWorker';
 
 import Home from './Home';
+import CreateHero from './CreateHero';
 import { all } from 'redux-saga/effects';
 import { Route, Switch } from 'react-router'; // react-router v4
 import logger from 'redux-logger';
@@ -62,6 +63,7 @@ ReactDOM.render(
         <AppHeader />
         <Switch>
           <Route exact path="/" render={() => <Home />} />
+          <Route exact path="/create" render={() => <CreateHero />} />
           <Route render={() => <div>Not Found</div>} />
         </Switch>
       </div>
