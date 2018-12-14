@@ -3,6 +3,7 @@ use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error as DieselError;
 
+use rocket::response::status;
 use rocket_contrib::json::{Json, JsonValue};
 
 use super::schema;
@@ -28,9 +29,18 @@ pub struct Hero {
     pub age: i32,
 }
 
-pub fn diesel_err_to_json(e: DieselError) -> Json<JsonValue> {
+fn get_status_code_from_diesel_err(e: DieselError) -> i32 {
+    if e == DieselError::NotFound {
+        404
+    } else {
+        400
+    }
+}
+
+fn diesel_err_to_json(e: DieselError) -> Json<JsonValue> {
     Json(json!({
-        "error": e.to_string()
+        "error": e.to_string(),
+        "status_code": get_status_code_from_diesel_err(e),
     }))
 }
 
@@ -40,6 +50,10 @@ impl Hero {
             .order(hero::id.desc())
             .first(connection)
             .unwrap()
+    }
+
+    fn find_by_id(connection: &MysqlConnection, id: i32) -> Result<HeroWithId, DieselError> {
+        hero::table.find(id).first(connection)
     }
 
     pub fn create(connection: &diesel::MysqlConnection, h: &Hero) -> Json<JsonValue> {
@@ -59,8 +73,8 @@ impl Hero {
             .unwrap()
     }
 
-    pub fn get_detail(connection: &MysqlConnection, id: i32) -> HeroWithId {
-        hero::table.find(id).first(connection).unwrap()
+    pub fn get_detail(connection: &MysqlConnection, id: i32) -> Json<JsonValue> {
+        Hero::find_by_id(connection, id).map_or_else(|e| diesel_err_to_json(e), |h| Json(json!(h)))
     }
 
     pub fn update(connection: &MysqlConnection, id: i32, h: HeroWithId) -> bool {

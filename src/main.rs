@@ -48,8 +48,8 @@ fn get_bulk(conn: MyDatabase) -> Json<JsonValue> {
 }
 
 #[get("/<id>")]
-fn get_detail(conn: MyDatabase, id: i32) -> Json<HeroWithId> {
-    Json(Hero::get_detail(&conn.0, id))
+fn get_detail(conn: MyDatabase, id: i32) -> Json<JsonValue> {
+    Hero::get_detail(&conn.0, id)
 }
 
 #[put("/<id>", data = "<hero>")]
