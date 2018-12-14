@@ -1,30 +1,26 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import HeroList from './HeroList';
 
 class App extends Component {
+  state = {
+    loading: true,
+  };
+
   componentDidMount() {
     fetch('http://localhost:8000/hero')
       .then(response => response.json())
-      .then(myJson => console.log(JSON.stringify(myJson)));
+      .then(heroes => this.setState({ heroes, loading: false }));
   }
 
   render() {
+    const { heroes } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          {heroes && <HeroList heroes={heroes} />}
         </header>
       </div>
     );
