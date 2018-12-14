@@ -4,18 +4,23 @@ This project is a simple webserver built with [Rust](https://www.rust-lang.org)
 and [Rocket](https://rocket.rs).
 It comes with a simple unit test and TravisCI integration.
 
-## Getting Started
+If you've already set up your MySQL database and have run migrations with Diesel, you can just run `make` to start up the server.
+Otherwise, continue reading.
 
-### First time setup (just to run)
-#### Setting up the environment
+## Getting Started
+You can get this project up and running in four easy steps.
+
+### Step 1: Setting up the environment
 To download the latest nightly build of Rust and its package manager, [cargo](https://doc.rust-lang.org/cargo/), run
 ```bash
 make setup
 ```
+(Rocket requires us to use nightly builds of Rust). 
 
-#### Setting up the database
-This demo uses MySQL, since it's what I know best.
-Download MySQL, log in as root, (usually passwordless), with:
+### Step 2: Creating the MySQL database
+The next step is to install/download MySQL and create a database.
+
+Typically, fresh installs come with a no-password root user. To log in as root on the command line, run
 ```
 mysql -uroot
 ```
@@ -35,19 +40,37 @@ mysql> exit
 Bye
 ```
 
-You can log in as the `hero` user you just created with:
+From the command line, you can log in as the `hero` user you just created with:
 ```
 mysql -uhero -phero -Dhero
 ```
 
-#### Setting up Diesel
-[Diesel](http://diesel.rs) is our ORM. It manages database interactions and migrations.
+### Step 3: Running the database migrations
+Next, we need to create a table in our database.
+We do this with [Diesel](http://diesel.rs).
+Diesel serves two purposes: to run our database migrations and serve as our ORM.
+You can install the Diesl CLI with
 ```
 cargo install diesel_cli --no-default-features --features "postgres mysql"
 ```
 
-### First time setup (to contribute)
-#### 
+Then you can create the database tables with 
+```bash
+env DATABASE_URL=mysql://hero:hero@localhost/hero diesel migration run
+```
+
+### Step 4: Running the server
+To start the server, simply run
+```bash
+# Start the server!
+make
+
+# Hit an endpoint!
+curl http://localhost:8000/hero
+```
+
+## Contributing
+### Diesel migrations
 When I was first setting up Diesel, I had to have it generate a `./migrations` directory with:
 ```bash
 env DATABASE_URL=mysql://hero:hero@localhost/hero diesel setup
@@ -69,16 +92,6 @@ env DATABASE_URL=mysql://hero:hero@localhost/hero diesel migration list
 env DATABASE_URL=mysql://hero:hero@localhost/hero diesel migration run
 ```
 
-### Running the server
-To start the server
-```bash
-# Start the server!
-make
-
-# Hit an endpoint!
-curl http://localhost:8000/hello/John/58
-```
-
 ### Running tests
 ```bash
 make test
@@ -91,4 +104,3 @@ You should be able to format files after that:
 ```bash
 make fmt
 ```
-
