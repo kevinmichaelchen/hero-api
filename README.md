@@ -48,16 +48,22 @@ cargo install diesel_cli --no-default-features --features "postgres mysql"
 
 ### First time setup (to contribute)
 #### 
-Then, to have Diesel create a `./migrations` directory, run
+When I was first setting up Diesel, I had to have it generate a `./migrations` directory with:
 ```bash
-# do not need to run if there's already a ./migrations directory
 env DATABASE_URL=mysql://hero:hero@localhost/hero diesel setup
+```
 
+Since we already have this directory, you won't have to run this again.
+
+Whenever you want to make schema changes, you can tell Diesel to generate both an "up" script and a "down" script.
+The former will get run when you migrate forward; the latter will be used to revert schema and database changes. 
+
+```
 # create migration scripts (both up and down)
 diesel migration generate create_hero_table
 
 # list migrations
-env DATABASE_URL=mysql://hero:hero@localhost/hero diesel migration run
+env DATABASE_URL=mysql://hero:hero@localhost/hero diesel migration list
 
 # run migrations
 env DATABASE_URL=mysql://hero:hero@localhost/hero diesel migration run
