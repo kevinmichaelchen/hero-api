@@ -35,20 +35,20 @@ pub fn diesel_err_to_json(e: DieselError) -> Json<JsonValue> {
 }
 
 impl Hero {
+    fn get_most_recently_created_hero(connection: &diesel::MysqlConnection) -> HeroWithId {
+        hero::table
+            .order(hero::id.desc())
+            .first(connection)
+            .unwrap()
+    }
+
     pub fn create(connection: &diesel::MysqlConnection, h: &Hero) -> Json<JsonValue> {
         diesel::insert_into(hero::table)
             .values(h)
             .execute(connection)
             .map_or_else(
                 |e| diesel_err_to_json(e),
-                |res| {
-                    Json(
-                        hero::table
-                            .order(hero::id.desc())
-                            .first(connection)
-                            .unwrap(),
-                    )
-                },
+                |res| Json(json!(Hero::get_most_recently_created_hero(connection))),
             )
     }
 
