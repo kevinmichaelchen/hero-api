@@ -1,8 +1,9 @@
 use diesel;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
+use diesel::result::Error as DieselError;
 
-use rocket_contrib::json::Json;
+use rocket_contrib::json::{Json, JsonValue};
 
 use super::schema;
 use schema::hero;
@@ -27,17 +28,28 @@ pub struct Hero {
     pub age: i32,
 }
 
+pub fn diesel_err_to_json(e: DieselError) -> Json<JsonValue> {
+    Json(json!({
+        "error": e.to_string()
+    }))
+}
+
 impl Hero {
-    pub fn create(connection: &diesel::MysqlConnection, h: &Hero) -> HeroWithId {
+    pub fn create(connection: &diesel::MysqlConnection, h: &Hero) -> Json<JsonValue> {
         diesel::insert_into(hero::table)
             .values(h)
             .execute(connection)
-            .expect("Error creating new hero");
-
-        hero::table
-            .order(hero::id.desc())
-            .first(connection)
-            .unwrap()
+            .map_or_else(
+                |e| diesel_err_to_json(e),
+                |res| {
+                    Json(
+                        hero::table
+                            .order(hero::id.desc())
+                            .first(connection)
+                            .unwrap(),
+                    )
+                },
+            )
     }
 
     pub fn get_bulk(connection: &MysqlConnection) -> Vec<HeroWithId> {
