@@ -6,13 +6,11 @@ const Hero = React.memo(({ hero }) => (
   </div>
 ));
 
-const HeroList = React.memo(({ heroes }) => (
+export default ({ heroes }) => (
   <div>
     <h1>Superheroes</h1>
     {heroes.map((h, i) => (
       <Hero hero={h} key={i} />
     ))}
   </div>
-));
-
-export default HeroList;
+);
