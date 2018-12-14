@@ -1,5 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(uniform_paths)]
+#![feature(result_map_or_else)]
 
 #[macro_use]
 extern crate rocket;
@@ -34,11 +35,11 @@ fn hello() -> &'static str {
 }
 
 #[post("/", data = "<hero>")]
-fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<HeroWithId> {
+fn create(conn: MyDatabase, hero: Json<Hero>) -> Json<JsonValue> {
     let insert = Hero {
         ..hero.into_inner()
     };
-    Json(Hero::create(&conn.0, &insert))
+    Hero::create(&conn.0, &insert)
 }
 
 #[get("/")]
@@ -47,8 +48,8 @@ fn get_bulk(conn: MyDatabase) -> Json<JsonValue> {
 }
 
 #[get("/<id>")]
-fn get_detail(conn: MyDatabase, id: i32) -> Json<HeroWithId> {
-    Json(Hero::get_detail(&conn.0, id))
+fn get_detail(conn: MyDatabase, id: i32) -> Json<JsonValue> {
+    Hero::get_detail(&conn.0, id)
 }
 
 #[put("/<id>", data = "<hero>")]
