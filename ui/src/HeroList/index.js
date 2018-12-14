@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Hero = React.memo(({ hero }) => (
+const Hero = ({ hero }) => (
   <div>
     <pre>{JSON.stringify(hero)}</pre>
   </div>
-));
+);
 
 export default ({ heroes }) => (
   <div>

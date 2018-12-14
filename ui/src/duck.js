@@ -22,7 +22,7 @@ export const ActionCreators = {
   }),
 };
 
-export const REDUCER_KEY = 'hero';
+export const REDUCER_KEY = 'heroes';
 
 export const Selectors = {
   loadingSelector: state => state[REDUCER_KEY].loading,
@@ -36,7 +36,7 @@ const initialState = {
   error: null,
 };
 
-export default function auth(state = initialState, action) {
+export default function heroesReducer(state = initialState, action) {
   switch (action.type) {
     case Actions.FETCH_HEROES_REQUEST:
       return {
@@ -66,7 +66,7 @@ export default function auth(state = initialState, action) {
 class Api {
   static fetchHeroes() {
     return fetch(`${BASE_API_URL}/hero`)
-      .then(response => response.json())
+      .then(r => r.json())
       .then(response => ({ response }))
       .catch(error => ({ error }));
   }
@@ -75,6 +75,8 @@ class Api {
 function* fetchHeroes() {
   const { response, error } = yield call(Api.fetchHeroes);
 
+  console.log('response', JSON.stringify(response));
+  console.log('error', error);
   if (response) {
     yield put(ActionCreators.fetchHeroesSuccess(response));
   } else {
