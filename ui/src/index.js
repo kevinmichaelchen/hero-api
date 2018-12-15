@@ -8,8 +8,9 @@ import './App.css';
 
 import Home from './Home';
 import CreateHero from './CreateHero';
+import HeroDetail from './HeroDetail';
 import { all } from 'redux-saga/effects';
-import { Route, Switch } from 'react-router'; // react-router v4
+import { Route, Switch } from 'react-router';
 import logger from 'redux-logger';
 import {
   ConnectedRouter,
@@ -64,6 +65,7 @@ ReactDOM.render(
         <AppHeader />
         <Switch>
           <Route exact path="/" render={() => <Home />} />
+          <Route exact path="/hero/:id" render={() => <HeroDetail />} />
           <Route exact path="/create" render={() => <CreateHero />} />
           <Route render={() => <div>Not Found</div>} />
         </Switch>

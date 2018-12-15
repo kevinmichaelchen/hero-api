@@ -8,6 +8,7 @@ import {
   Selectors as HeroesSelectors,
 } from '../duck';
 import './CreateHero.css';
+import { Link } from 'react-router-dom';
 
 const FormField = ({ label, fieldName, type }) => (
   <div className="form-field-container">
@@ -26,6 +27,7 @@ class CreateHero extends React.Component {
     } = this.props;
     return (
       <div>
+        <Link to="/">Back</Link>
         <h1>Create Hero</h1>
         <Formik
           initialValues={{ name: '', identity: '', hometown: '', age: '' }}

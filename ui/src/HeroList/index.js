@@ -1,8 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Hero = ({ hero }) => (
   <div>
-    <pre>{JSON.stringify(hero)}</pre>
+    <Link to={`/hero/${hero.id}`}>
+      <pre>{JSON.stringify(hero)}</pre>
+    </Link>
   </div>
 );
 
