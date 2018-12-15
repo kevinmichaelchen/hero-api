@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import './index.css';
 import AppHeader from './AppHeader';
 import * as serviceWorker from './serviceWorker';
+import './App.css';
 
 import Home from './Home';
 import CreateHero from './CreateHero';
@@ -59,7 +60,7 @@ function getStore() {
 ReactDOM.render(
   <Provider store={getStore()}>
     <ConnectedRouter history={history}>
-      <div>
+      <div className="app">
         <AppHeader />
         <Switch>
           <Route exact path="/" render={() => <Home />} />

@@ -7,6 +7,17 @@ import {
   ActionCreators as HeroesActionCreators,
   Selectors as HeroesSelectors,
 } from '../duck';
+import './CreateHero.css';
+
+const FormField = ({ label, fieldName, type }) => (
+  <div className="form-field-container">
+    <div className="form-field">
+      <span className="form-field-label">{label}:</span>
+      <Field className="form-field-input" type={type} name={fieldName} />
+    </div>
+    <ErrorMessage name={fieldName} component="div" />
+  </div>
+);
 
 class CreateHero extends React.Component {
   render() {
@@ -43,30 +54,10 @@ class CreateHero extends React.Component {
         >
           {({ isSubmitting }) => (
             <Form>
-              <div>
-                <span>Name:</span>
-                <Field type="name" name="name" />
-                <ErrorMessage name="name" component="div" />
-              </div>
-
-              <div>
-                <span>Identity:</span>
-                <Field type="identity" name="identity" />
-                <ErrorMessage name="identity" component="div" />
-              </div>
-
-              <div>
-                <span>Hometown:</span>
-                <Field type="hometown" name="hometown" />
-                <ErrorMessage name="hometown" component="div" />
-              </div>
-
-              <div>
-                <span>Age:</span>
-                <Field type="age" name="age" />
-                <ErrorMessage name="age" component="div" />
-              </div>
-
+              <FormField label="Name" fieldName="name" type="text" />
+              <FormField label="Identity" fieldName="identity" type="text" />
+              <FormField label="Hometown" fieldName="hometown" type="text" />
+              <FormField label="Age" fieldName="age" type="text" />
               <button type="submit" disabled={isSubmitting}>
                 Submit
               </button>
