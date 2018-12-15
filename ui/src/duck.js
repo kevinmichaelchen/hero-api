@@ -1,6 +1,5 @@
 import { call, put, takeEvery, fork } from 'redux-saga/effects';
-
-const BASE_API_URL = 'http://localhost:8000';
+import Api from './api';
 
 const Actions = {
   FETCH_HEROES_REQUEST: 'FETCH_HEROES_REQUEST',
@@ -94,32 +93,6 @@ export default function heroesReducer(state = initialState, action) {
       };
     default:
       return state;
-  }
-}
-
-class Api {
-  static fetchHeroes() {
-    return fetch(`${BASE_API_URL}/hero`)
-      .then(r => r.json())
-      .then(response => ({ response }))
-      .catch(error => ({ error }));
-  }
-
-  static createHero(h) {
-    const body = JSON.stringify(h);
-    console.log('body =', body);
-    return fetch(`${BASE_API_URL}/hero`, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        // "Content-Type": "application/json; charset=utf-8",
-        'Content-Type': 'application/json',
-      },
-      body,
-    })
-      .then(r => r.json())
-      .then(response => ({ response }))
-      .catch(error => ({ error }));
   }
 }
 
