@@ -22,6 +22,7 @@ use rocket_contrib::json::{Json, JsonValue};
 #[database("my_db")]
 struct MyDatabase(diesel::MysqlConnection);
 
+mod cors;
 mod hero;
 mod schema;
 use hero::{Hero, HeroWithId};
@@ -78,6 +79,7 @@ fn rocket() -> Rocket {
         )
         .mount("/", routes![hello])
         .attach(MyDatabase::fairing())
+        .attach(cors::CORS())
 }
 
 fn main() {
