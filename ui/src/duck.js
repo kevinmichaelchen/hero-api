@@ -37,12 +37,13 @@ export const ActionCreators = {
     payload: error,
   }),
 
-  fetchHeroRequest: hero => ({
+  fetchHeroRequest: id => ({
     type: Actions.FETCH_HERO_REQUEST,
-    payload: hero,
+    payload: id,
   }),
-  fetchHeroSuccess: () => ({
+  fetchHeroSuccess: payload => ({
     type: Actions.FETCH_HERO_SUCCESS,
+    payload,
   }),
   fetchHeroFailure: error => ({
     type: Actions.FETCH_HERO_FAILURE,
@@ -65,8 +66,9 @@ export const ActionCreators = {
     type: Actions.UPDATE_HERO_REQUEST,
     payload: hero,
   }),
-  updateHeroSuccess: () => ({
+  updateHeroSuccess: payload => ({
     type: Actions.UPDATE_HERO_SUCCESS,
+    payload,
   }),
   updateHeroFailure: error => ({
     type: Actions.UPDATE_HERO_FAILURE,
@@ -77,8 +79,9 @@ export const ActionCreators = {
     type: Actions.DELETE_HERO_REQUEST,
     payload: id,
   }),
-  deleteHeroSuccess: () => ({
+  deleteHeroSuccess: payload => ({
     type: Actions.DELETE_HERO_SUCCESS,
+    payload,
   }),
   deleteHeroFailure: error => ({
     type: Actions.DELETE_HERO_FAILURE,
