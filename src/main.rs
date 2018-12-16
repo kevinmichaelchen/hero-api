@@ -11,18 +11,21 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 
+extern crate rocket_cors;
+
 use rocket::Rocket;
 
 #[macro_use]
 extern crate diesel;
 //use rocket_contrib::databases::diesel;
 
+use rocket::http::Method;
 use rocket_contrib::json::{Json, JsonValue};
+use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
 #[database("my_db")]
 struct MyDatabase(diesel::MysqlConnection);
 
-mod cors;
 mod hero;
 mod schema;
 use hero::{Hero, HeroWithId};
@@ -72,6 +75,26 @@ fn delete(conn: MyDatabase, id: i32) -> Json<JsonValue> {
 }
 
 fn rocket() -> Rocket {
+    let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://localhost:3000"]);
+    assert!(failed_origins.is_empty());
+    let options = rocket_cors::Cors {
+        allowed_origins,
+        allowed_methods: vec![
+            Method::Get,
+            Method::Post,
+            Method::Put,
+            Method::Patch,
+            Method::Delete,
+            Method::Options,
+        ]
+        .into_iter()
+        .map(From::from)
+        .collect(),
+        //        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allow_credentials: true,
+        ..Default::default()
+    };
+
     rocket::ignite()
         .mount(
             "/hero",
@@ -79,7 +102,7 @@ fn rocket() -> Rocket {
         )
         .mount("/", routes![hello])
         .attach(MyDatabase::fairing())
-        .attach(cors::CORS())
+        .attach(options)
 }
 
 fn main() {
