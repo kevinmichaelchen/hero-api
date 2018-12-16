@@ -20,6 +20,11 @@ const FormField = ({ label, fieldName, type }) => (
   </div>
 );
 
+const sanitize = values => ({
+  ...values,
+  age: parseInt(values.age, 10),
+});
+
 class CreateHero extends React.Component {
   render() {
     const {
@@ -49,7 +54,7 @@ class CreateHero extends React.Component {
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
-              createHeroRequest(values);
+              createHeroRequest(sanitize(values));
               setSubmitting(false);
             }, 400);
           }}
