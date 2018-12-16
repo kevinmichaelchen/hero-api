@@ -7,6 +7,8 @@ import {
   ActionCreators as HeroesActionCreators,
 } from '../duck';
 import { Link } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
+import HeroCard from '../HeroCard';
 
 class Hero extends React.PureComponent {
   handleDelete = () => this.props.deleteHeroRequest(this.props.hero.id);
@@ -16,9 +18,11 @@ class Hero extends React.PureComponent {
     return (
       <div>
         <Link to={`/hero/${hero.id}`}>
-          <pre>{JSON.stringify(hero)}</pre>
+          <HeroCard hero={hero} />
         </Link>
-        <button onClick={this.handleDelete}>Delete</button>
+        <Button variant="contained" color="primary" onClick={this.handleDelete}>
+          Delete
+        </Button>
       </div>
     );
   }
@@ -50,7 +54,6 @@ class Home extends React.Component {
     return (
       <div>
         <Link to="/create">Create New Hero</Link>
-        {/*<button onClick={() => console.log('click')}>Create New Hero</button>*/}
         {heroes && (
           <HeroList deleteHeroRequest={deleteHeroRequest} heroes={heroes} />
         )}

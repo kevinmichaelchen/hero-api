@@ -7,6 +7,8 @@ import {
   ActionCreators as HeroesActionCreators,
   Selectors as HeroesSelectors,
 } from '../duck';
+import { Link } from 'react-router-dom';
+import HeroCard from '../HeroCard';
 
 class HeroDetail extends React.Component {
   componentDidMount() {
@@ -30,7 +32,10 @@ class HeroDetail extends React.Component {
     }
     return (
       <div>
-        Hero Detail <pre>{JSON.stringify(hero)}</pre>
+        <div>
+          <Link to="/">Back</Link>
+        </div>
+        <div>{hero && <HeroCard hero={hero} />}</div>
       </div>
     );
   }
