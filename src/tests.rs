@@ -19,12 +19,13 @@ fn it_works() {
         identity: String::from("Clark Kent"),
         hometown: String::from("Metropolis"),
         age: 32,
+        image_url: Some(String::from("https://images.com/superman")),
     };
     let serialized = serde_json::to_string(&hero).unwrap();
     println!("serialized = {}", serialized);
     assert_eq!(
         serialized,
-        r#"{"id":1,"name":"Superman","identity":"Clark Kent","hometown":"Metropolis","age":32}"#
+        r#"{"id":1,"name":"Superman","identity":"Clark Kent","hometown":"Metropolis","age":32,"image_url":"https://images.com/superman"}"#
     );
 
     let deserialized: HeroWithId = serde_json::from_str(&serialized).unwrap();
@@ -35,4 +36,5 @@ fn it_works() {
     assert_eq!(deserialized.identity, "Clark Kent");
     assert_eq!(deserialized.hometown, "Metropolis");
     assert_eq!(deserialized.age, 32);
+    assert_eq!(deserialized.image_url, Some(String::from("https://images.com/superman")));
 }
