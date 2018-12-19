@@ -31,6 +31,16 @@ pub struct Hero {
     pub image_url: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct HeroPatch {
+    pub fields: Vec<String>,
+    pub name: String,
+    pub identity: String,
+    pub hometown: String,
+    pub age: i32,
+    pub image_url: Option<String>,
+}
+
 fn get_status_code_from_diesel_err(e: DieselError) -> i32 {
     if e == DieselError::NotFound {
         404
@@ -79,11 +89,53 @@ impl Hero {
         Hero::find_by_id(connection, id).map_or_else(|e| diesel_err_to_json(e), |h| Json(json!(h)))
     }
 
-    pub fn update(connection: &MysqlConnection, id: i32, h: HeroWithId) -> bool {
+    pub fn update(connection: &MysqlConnection, id: i32, h: HeroWithId) -> Json<JsonValue> {
         diesel::update(hero::table.find(id))
             .set(&h)
             .execute(connection)
-            .is_ok()
+            .map_or_else(
+                |e| diesel_err_to_json(e),
+                |extant| Hero::get_detail(connection, id),
+            )
+    }
+
+    fn patch_hero_fields(h: HeroPatch, extant: HeroWithId) -> Option<HeroWithId> {
+        let mut new = HeroWithId { ..extant };
+        for field in h.fields {
+            match field.as_ref() {
+                "name" => new.name = h.name.clone(),
+                "identity" => new.identity = h.identity.clone(),
+                "age" => new.age = h.age.clone(),
+                "hometown" => new.hometown = h.hometown.clone(),
+                x => (),
+            }
+        }
+        let mm = new;
+        Some(mm)
+    }
+
+    fn do_patch(
+        connection: &MysqlConnection,
+        id: i32,
+        h: HeroPatch,
+        extant: HeroWithId,
+    ) -> Json<JsonValue> {
+        Hero::patch_hero_fields(h, extant).map_or_else(
+            || {
+                Json(json!({
+                    "error": "bad patch",
+                    "status_code": "400",
+                }))
+            },
+            |new| Hero::update(connection, id, new),
+        )
+    }
+
+    pub fn patch(connection: &MysqlConnection, id: i32, h: HeroPatch) -> Json<JsonValue> {
+        Hero::find_by_id(connection, id).map_or_else(
+            |e| diesel_err_to_json(e),
+            |extant| Hero::do_patch(connection, id, h, extant),
+        )
     }
 
     pub fn delete(connection: &MysqlConnection, id: i32) -> bool {

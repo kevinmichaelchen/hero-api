@@ -28,7 +28,7 @@ struct MyDatabase(diesel::MysqlConnection);
 
 mod hero;
 mod schema;
-use hero::{Hero, HeroWithId};
+use hero::{Hero, HeroPatch, HeroWithId};
 
 #[cfg(test)]
 mod tests;
@@ -62,9 +62,15 @@ fn update(conn: MyDatabase, id: i32, hero: Json<HeroWithId>) -> Json<JsonValue> 
     let update = HeroWithId {
         ..hero.into_inner()
     };
-    Json(json!({
-        "success": Hero::update(&conn.0, id, update)
-    }))
+    Hero::update(&conn.0, id, update)
+}
+
+#[patch("/<id>", data = "<hero>")]
+fn patch(conn: MyDatabase, id: i32, hero: Json<HeroPatch>) -> Json<JsonValue> {
+    let update = HeroPatch {
+        ..hero.into_inner()
+    };
+    Hero::patch(&conn.0, id, update)
 }
 
 #[delete("/<id>")]
@@ -98,7 +104,7 @@ fn rocket() -> Rocket {
     rocket::ignite()
         .mount(
             "/hero",
-            routes![create, update, delete, get_bulk, get_detail],
+            routes![create, update, delete, get_bulk, get_detail, patch],
         )
         .mount("/", routes![hello])
         .attach(MyDatabase::fairing())
