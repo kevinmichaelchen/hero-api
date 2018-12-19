@@ -103,10 +103,10 @@ impl Hero {
         let mut new = HeroWithId { ..extant };
         for field in h.fields {
             match field.as_ref() {
-                "name" => new.name = h.name,
-                "identity" => new.identity = h.identity,
-                "age" => new.age = h.age,
-                "hometown" => new.hometown = h.hometown,
+                "name" => new.name = h.name.clone(),
+                "identity" => new.identity = h.identity.clone(),
+                "age" => new.age = h.age.clone(),
+                "hometown" => new.hometown = h.hometown.clone(),
                 x => (),
             }
         }
