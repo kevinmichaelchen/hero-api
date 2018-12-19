@@ -18,6 +18,7 @@ pub struct HeroWithId {
     pub identity: String,
     pub hometown: String,
     pub age: i32,
+    pub image_url: Option<String>,
 }
 
 #[derive(AsChangeset, Serialize, Deserialize, Debug, Insertable)]
@@ -27,6 +28,7 @@ pub struct Hero {
     pub identity: String,
     pub hometown: String,
     pub age: i32,
+    pub image_url: Option<String>,
 }
 
 fn get_status_code_from_diesel_err(e: DieselError) -> i32 {

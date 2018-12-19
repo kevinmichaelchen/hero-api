@@ -20,13 +20,13 @@ const styles = {
 
 function HeroCard(props) {
   const { classes, hero } = props;
-  const { name, identity, hometown, age } = hero;
+  const { name, identity, hometown, age, image_url } = hero;
   return (
     <Card className={classes.card}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image="https://vignette.wikia.nocookie.net/superman/images/b/b1/Superman_Action_976_Gary_Frank.png/revision/latest/scale-to-width-down/288?cb=20170501140424"
+          image={image_url}
           title="Contemplative Reptile"
         />
         <CardContent>
