@@ -36,5 +36,8 @@ fn it_works() {
     assert_eq!(deserialized.identity, "Clark Kent");
     assert_eq!(deserialized.hometown, "Metropolis");
     assert_eq!(deserialized.age, 32);
-    assert_eq!(deserialized.image_url, Some(String::from("https://images.com/superman")));
+    assert_eq!(
+        deserialized.image_url,
+        Some(String::from("https://images.com/superman"))
+    );
 }

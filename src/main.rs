@@ -28,7 +28,7 @@ struct MyDatabase(diesel::MysqlConnection);
 
 mod hero;
 mod schema;
-use hero::{Hero, HeroWithId, HeroPatch};
+use hero::{Hero, HeroPatch, HeroWithId};
 
 #[cfg(test)]
 mod tests;

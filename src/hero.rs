@@ -95,14 +95,12 @@ impl Hero {
             .execute(connection)
             .map_or_else(
                 |e| diesel_err_to_json(e),
-                |extant| Hero::get_detail(connection, id)
+                |extant| Hero::get_detail(connection, id),
             )
     }
 
     fn patch_hero_fields(h: HeroPatch, extant: HeroWithId) -> Option<HeroWithId> {
-        let mut new = HeroWithId {
-            ..extant
-        };
+        let mut new = HeroWithId { ..extant };
         for field in h.fields {
             match field.as_ref() {
                 "name" => new.name = h.name,
@@ -116,20 +114,27 @@ impl Hero {
         Some(mm)
     }
 
-    fn do_patch(connection: &MysqlConnection, id: i32, h: HeroPatch, extant: HeroWithId) -> Json<JsonValue> {
+    fn do_patch(
+        connection: &MysqlConnection,
+        id: i32,
+        h: HeroPatch,
+        extant: HeroWithId,
+    ) -> Json<JsonValue> {
         Hero::patch_hero_fields(h, extant).map_or_else(
-            || Json(json!({
-        "error": "bad patch",
-        "status_code": "400",
-    })),
-            |new| Hero::update(connection, id, new)
+            || {
+                Json(json!({
+                    "error": "bad patch",
+                    "status_code": "400",
+                }))
+            },
+            |new| Hero::update(connection, id, new),
         )
     }
 
     pub fn patch(connection: &MysqlConnection, id: i32, h: HeroPatch) -> Json<JsonValue> {
         Hero::find_by_id(connection, id).map_or_else(
             |e| diesel_err_to_json(e),
-            |extant| Hero::do_patch(connection, id, h, extant)
+            |extant| Hero::do_patch(connection, id, h, extant),
         )
     }
 
